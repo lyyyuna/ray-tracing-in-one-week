@@ -1,4 +1,7 @@
 use std::borrow::Cow;
+use std::path::Path;
+use std::fs::File;
+use std::io::Write;
 
 macro_rules! check0to1 {
     ($r: ident, $g: ident, $b: ident) => {
@@ -83,6 +86,35 @@ pub struct Image {
 }
 
 impl Image {
-    pub fn new() -> Self {
+    pub fn new(width: usize, height: usize) -> Self {
+        let colors = vec![Color::default(); width * height];
+        Self {
+            width, height, colors
+        }
+    }
+
+    pub fn save<P: AsRef<Path>>(&self, path: P) -> std::io::Result<()> {
+        let mut file = File::create(path)?;
+        write!(&mut file, "P3\n{width} {height}\n255\n", width=self.width, height=self.height)?;
+
+        for row in 0..self.height {
+            for column in 0..self.width {
+                let index = row * self.width + column;
+                let color = self.colors[index].i();
+                write!(&mut file, "{r} {g} {b}\n", r=color.r, g=color.g, b=color.b)?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn reshape(&mut self, width:usize) -> Result<(), ()> {
+        if self.colors.len() % width == 0 {
+            self.width = width;
+            self.height = self.colors.len() / width;
+            Ok(())
+        } else {
+            Err(())
+        }
     }
 }
