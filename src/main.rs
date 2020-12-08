@@ -25,5 +25,6 @@ fn main() {
         Some(c)
     }).collect();
 
-    picture.reshape(256);
+    picture.reshape(256).unwrap();
+    picture.save("first.ppm").unwrap();
 }

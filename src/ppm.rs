@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, iter::FromIterator};
 use std::path::Path;
 use std::fs::File;
 use std::io::Write;
@@ -116,5 +116,12 @@ impl Image {
         } else {
             Err(())
         }
+    }
+}
+
+impl FromIterator<Color> for Image {
+    fn from_iter<T: IntoIterator<Item = Color>>(iter: T) -> Self {
+        let colors = Vec::from_iter(iter);
+        Self {height: 1, width: colors.len(), colors}
     }
 }
