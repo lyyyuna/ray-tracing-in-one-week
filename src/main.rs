@@ -3,6 +3,7 @@ use env_logger;
 
 mod color;
 mod image;
+mod vec3;
 
 fn main() {
     env_logger::init();
