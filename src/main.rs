@@ -4,6 +4,7 @@ use env_logger;
 mod color;
 mod image;
 mod vec3;
+mod ray;
 
 fn main() {
     env_logger::init();
