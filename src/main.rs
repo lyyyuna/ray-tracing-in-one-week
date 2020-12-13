@@ -1,18 +1,15 @@
 #![allow(dead_code)]
 use env_logger;
 
-mod color;
 mod image;
-mod vec3;
-mod ray;
+mod types;
 
-use color::Color;
 use log::info;
-use vec3::{Point3, Vec3};
 use image::{Painter};
-use ray::Ray;
+use types::{Color, Ray, Vec3, Point3};
 
-fn ray_color(r: &ray::Ray) -> Color {
+
+fn ray_color(r: &Ray) -> Color {
     let unit = r.direction.unit();
     let t = 0.5 * (unit.y + 1.0);
     let c = (1.0 - t) * Vec3::new(1.0, 1.0, 1.0) + t * Vec3::new(0.0, 0.7, 1.0);

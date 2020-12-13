@@ -2,7 +2,7 @@ use std::{fs::File, io::BufWriter, path::Path, vec};
 use std::io::Write;
 use log::info;
 
-use super::color::Color;
+use crate::types::Color;
 
 pub struct Image {
     width: usize,
