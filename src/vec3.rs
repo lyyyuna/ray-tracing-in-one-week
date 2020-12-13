@@ -78,6 +78,20 @@ impl Mul<f64> for &Vec3 {
     }
 }
 
+impl Mul<f64> for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: f64) -> Self::Output {
+        Vec3::new(self.x * rhs, self.y * rhs, self.z * rhs)
+    }
+}
+
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::new(self * rhs.x, self * rhs.y, self * rhs.z)
+    }
+}
+
 impl Div<f64> for &Vec3 {
     type Output = Vec3;
     fn div(self, rhs: f64) -> Self::Output {
@@ -88,7 +102,7 @@ impl Div<f64> for &Vec3 {
 impl Neg for &Vec3 {
     type Output = Vec3;
     fn neg(self) -> Self::Output {
-        Vec::new(-self.x, -self.y, -self.z)
+        Vec3::new(-self.x, -self.y, -self.z)
     }
 }
 
@@ -106,6 +120,13 @@ impl Add<Vec3> for &Vec3 {
     }
 }
 
+impl Add<Self> for Vec3 {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+    }
+}
+
 impl Sub<Self> for &Vec3 {
     type Output = Vec3;
     fn sub(self, rhs: Self) -> Self::Output {
@@ -116,6 +137,20 @@ impl Sub<Self> for &Vec3 {
 impl Sub<Vec3> for &Vec3 {
     type Output = Vec3;
     fn sub(self, rhs: Vec3) -> Self::Output {
+        Vec3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
+    }
+}
+
+impl Sub<Self> for Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Vec3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
+    }
+}
+
+impl Sub<&Self> for Vec3 {
+    type Output = Vec3;
+    fn sub(self, rhs: &Self) -> Self::Output {
         Vec3::new(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
     }
 }
@@ -191,6 +226,6 @@ impl DivAssign<f64> for Vec3 {
 
 impl Into<Color> for Vec3 {
     fn into(self) -> Color{
-        Color::new(self.x as f32, self.y as f32, self.z as f32)
+        Color::newf(self.x as f32, self.y as f32, self.z as f32)
     }
 }

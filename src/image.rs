@@ -47,38 +47,33 @@ impl Image {
 pub struct Painter {
     width: usize,
     height: usize,
-    file: File,
+    // file: File,
 }
 
 impl Painter {
-    pub fn new<P: AsRef<Path>>(width: usize, height: usize, path: P) -> std::io::Result<Self> {
-        Ok(Self {
-            width, height,
-            file:  File::create(path.as_ref())?,
-        })
+    pub fn new(width: usize, height: usize) -> Self {
+        Self { width, height }
     }
 
-    pub fn draw<F>(self, mut f: F) -> std::io::Result<()>
+    pub fn draw<P, F>(&self, path: P, mut f: F) -> std::io::Result<()>
     where
-        F: FnMut(usize, usize) -> Color,
-    {
-        let mut file = BufWriter::new(self.file);
+        P: AsRef<Path>,
+        F: FnMut(usize, usize) -> Color, {
+        let mut file = BufWriter::new(File::create(path.as_ref())?);
         write!(&mut file, "P3\n{width} {height}\n255\n", width = self.width, height = self.height)?;
 
         for row in 0..self.height {
-            info!("Scan line remaining: {}", self.height - row);
+            info!("scan line remaining: {}", self.height - row);
             for col in 0..self.width {
                 let color = f(row, col);
                 let color = color.i();
                 write!(&mut file, "{r} {g} {b}\n", r = color.r, g = color.g, b = color.b)?;
-            }
-            // 16 KB
-            if file.buffer().len() >= 16 << 10 {
-                file.flush()?;
+                // 16 KB
+                if file.buffer().len() >= 16 << 10 {
+                    file.flush()?;
+                }
             }
         }
-
-        drop(file);
 
         Ok(())
     }
