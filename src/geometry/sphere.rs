@@ -1,4 +1,6 @@
 use crate::types::Point3;
+use crate::types::Vec3;
+use crate::types::Ray;
 
 use super::Geometry;
 
@@ -27,14 +29,14 @@ impl Geometry for Sphere {
     // Delta = b^2 - 4ac = 4(DL)^2 - 4 D^2 (L^2 - r2)
     // So, check (DL)^2 - D^2(L^2 - r^2)
     // root is
-    fn hit_by_ray(&self, r: &crate::types::Ray) -> Option<Point3> {
+    fn check_ray_hits(&self, r: &Ray) -> bool {
         let l = &r.origin - &self.center;
-        let dl = r.direction.dot(&l);
-        let dl2 = dl.powi(2);
+        let dl2 = r.direction.dot(&l).powi(2);
         let d2 = r.direction.length_squared();
-    }
-
-    fn normal(&self, p: &Point3) -> Vec3 {
+        let l2 = l.length_squared();
+        let r2 = self.radius * self.radius;
+        let delta = dl2 - d2 * (l2 - r2);
         
+        delta > 0.0
     }
 }

@@ -5,9 +5,9 @@ mod image;
 mod types;
 mod geometry;
 
-use log::info;
 use image::{Painter};
 use types::{Color, Ray, Vec3, Point3};
+use geometry::{Geometry, Sphere};
 
 
 fn ray_color(r: &Ray) -> Color {
@@ -24,7 +24,7 @@ fn main() {
     let image_width = 384usize;
     let image_height = (image_width as f64 / aspect_radio) as usize;
     let viewport_height = 2.0;
-    let viewport_width = viewport_height / aspect_radio;
+    let viewport_width = viewport_height * aspect_radio;
     let focal_length = 1.0;
     let origin = Point3::default();
     let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
@@ -33,14 +33,17 @@ fn main() {
         &origin - &horizontal / 2.0 - &vertical / 2.0 - Vec3::new(0.0, 0.0, focal_length);
 
     let painter = Painter::new(image_width, image_height);
-    painter.draw("second.ppm", |row, col| {
+    let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
+    painter.draw("third.ppm", |row, col| {
         let u = col as f64 / (image_width - 1) as f64;
         let v = (image_height - 1 - row) as f64 / (image_height - 1) as f64;
         let r = Ray::new(origin.clone(), &left_bottom_corner + &horizontal * u + &vertical * v - &origin);
 
-        info!("{} {} = {}", row, col, r.direction);
-
-        ray_color(&r)
+        if sphere.check_ray_hits(&r) {
+            Color::new(255, 0, 0)
+        } else {
+            ray_color(&r)
+        }
     })
     .unwrap();
                             
