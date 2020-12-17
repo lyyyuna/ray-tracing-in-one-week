@@ -3,6 +3,7 @@ use env_logger;
 
 mod image;
 mod types;
+mod geometry;
 
 use log::info;
 use image::{Painter};
