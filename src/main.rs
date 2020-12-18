@@ -34,13 +34,13 @@ fn main() {
 
     let painter = Painter::new(image_width, image_height);
     let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
-    painter.draw("third.ppm", |row, col| {
+    painter.draw("four.ppm", |row, col| {
         let u = col as f64 / (image_width - 1) as f64;
         let v = (image_height - 1 - row) as f64 / (image_height - 1) as f64;
         let r = Ray::new(origin.clone(), &left_bottom_corner + &horizontal * u + &vertical * v - &origin);
 
-        if sphere.check_ray_hits(&r) {
-            Color::new(255, 0, 0)
+        if let Some(p) = sphere.hit_by_ray(&r) {
+            ((sphere.normal(&p) + Vec3::new(1.0, 1.0, 1.0)) * 0.5).into()
         } else {
             ray_color(&r)
         }

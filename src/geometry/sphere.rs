@@ -29,14 +29,22 @@ impl Geometry for Sphere {
     // Delta = b^2 - 4ac = 4(DL)^2 - 4 D^2 (L^2 - r2)
     // So, check (DL)^2 - D^2(L^2 - r^2)
     // root is
-    fn check_ray_hits(&self, r: &Ray) -> bool {
+    fn hit_by_ray(&self, r: &Ray) -> Option<Point3> {
         let l = &r.origin - &self.center;
-        let dl2 = r.direction.dot(&l).powi(2);
+        let dl = r.direction.dot(&l);
+        let dl2 = dl.powi(2);
         let d2 = r.direction.length_squared();
         let l2 = l.length_squared();
-        let r2 = self.radius * self.radius;
-        let delta = dl2 - d2 * (l2 - r2);
+        let delta = dl2 - d2 * (l2 - self.radius_squared);
         
-        delta > 0.0
+        if delta > 0.0 {
+            Some(r.at((-dl - delta.sqrt()) / d2))
+        } else {
+            None
+        }
+    }
+
+    fn normal(&self, p: &Point3) -> Vec3 {
+        (p - &self.center).unit()
     }
 }
