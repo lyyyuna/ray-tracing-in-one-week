@@ -1,0 +1,4 @@
+(executable
+ (public_name ocamltracing)
+ (name main)
+ (libraries ocamltracing))
